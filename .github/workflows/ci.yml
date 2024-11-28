@@ -29,17 +29,19 @@ jobs:
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install -r requirements.txt
+        pip install pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Run tests
       run: |
-        cd tests
-        python -m pytest test_models.py -v
+        pwd
+        ls -la
+        PYTHONPATH=$PYTHONPATH:$(pwd) python -m pytest tests/test_models.py -v
 
     - name: Check CPU Performance
       run: |
-        cd tests
-        ./test_environment.sh
+        chmod +x tests/test_environment.sh
+        PYTHONPATH=$PYTHONPATH:$(pwd) ./tests/test_environment.sh
 
   deploy:
     needs: test
